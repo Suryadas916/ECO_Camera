@@ -1,32 +1,52 @@
 import cv2
+import pytesseract
 
-##########################################
+camera = cv2.VideoCapture(0)
+nPlateCascade = cv2.CascadeClassifier("cascade classifiers/haarcascade_russian_plate_number.xml")
+src = './num_plate.jpeg'
 
-frameWidth = 640
-frameHeight = 480
-nPlateCascade = cv2.CascadeClassifier("Resources/haarcascade_russian_plate_number.xml")
-minArea = 200
-color = (0, 255, 0)
-############################################
-cap = cv2.VideoCapture("Resources/ai.mp4")
-cap.set(3, frameWidth)
-cap.set(4, frameHeight)
-cap.set(10, 150)
+
+def capture_image(src=None):
+    if src:
+        img = cv2.imread(src)
+    else:
+        _, img = camera.read()
+    return img
+
+
+def detect_numberplate(image):
+    numberPlates = nPlateCascade.detectMultiScale(image, 1.1, 5)
+    return numberPlates
+
+
+def plotbb(image, detections):
+    """
+    Plot Bounding box
+    :param image:
+    :param detections:
+    :return:
+    """
+    for (x, y, w, h) in detections:
+        area = w * h
+        min_area = 200
+        if area > min_area:
+            cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 255), 2)
+            roi = image[y:y + h, x:x + w]
+            reg_number = get_vehicle_number(roi)
+            print(reg_number)
+
+
+def get_vehicle_number(image):
+    number = pytesseract.image_to_string(image)
+    return number
+
 
 while True:
-    success, img = cap.read()
-    imgGray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
-    numberPlates = nPlateCascade.detectMultiScale(img, 1.1, 10)
-    for (x, y, w, h) in numberPlates:
-        area = w * h
-        if area > minArea:
-            cv2.rectangle(img, (x, y), (x + w, y + h), (255, 0, 255), 2)
-            cv2.putText(img, "Number Plate", (x, y - 5),
-                        cv2.FONT_HERSHEY_COMPLEX_SMALL, 1, color, 2)
-            imgRoi = img[y:y + h, x:w + x]
-            cv2.imshow("ROI", imgRoi)
+    image = capture_image(src)
+    numberplates = detect_numberplate(image)
+    plotbb(image, numberplates)
 
-            cv2.imshow("Result", img)
-
-            if cv2.waitKey(1) & 0xFF == ord('q'):
-                break
+    cv2.imshow('image', image)
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+cv2.destroyAllWindows()
