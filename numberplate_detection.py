@@ -22,8 +22,9 @@ def capture_image(src=None):
 
 
 def detect_numberplate(image):
-    numberPlates = nPlateCascade.detectMultiScale(image, 1.1, 5)
-    return numberPlates
+    numberplates = nPlateCascade.detectMultiScale(image, 1.1, 5)
+
+    return numberplates
 
 
 def plotbb(image, detections):
@@ -54,13 +55,12 @@ def get_vehicle_number(image):
     number = pytesseract.image_to_string(image)
     return number
 
-
-while True:
-    # image = capture_image()
-    image = capture_image(src)
-    numberplates = detect_numberplate(image)
-    plotbb(image, numberplates)
-
-    if cv2.waitKey(1) & 0xFF == ord('q'):
-        break
-cv2.destroyAllWindows()
+# while True:
+#     # image = capture_image()
+#     image = capture_image(src)
+#     numberplates = detect_numberplate(image)
+#     plotbb(image, numberplates)
+#
+#     if cv2.waitKey(1) & 0xFF == ord('q'):
+#         break
+# cv2.destroyAllWindows()
