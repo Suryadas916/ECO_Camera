@@ -2,9 +2,10 @@ import cv2
 import concurrent.futures as concurrent
 from vehicle_detection import detect_vehicle
 from numberplate_detection import detect_numberplate, get_vehicle_number
+from garbage_detection import detect_garbage
 
 # Give video filename to perform detection on video
-video = cv2.VideoCapture(0)
+video = cv2.VideoCapture('./test_video.mp4')
 
 
 def capture_image(src=None):
@@ -36,6 +37,14 @@ def detect(image):
                 min_area = 200
                 if area > min_area:
                     cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 255), 2)
+                    # garbage detection
+                    garbage = detect_garbage(image)
+                    if garbage:
+                        bounding_boxes = vehicles[0]
+                        for gbb in bounding_boxes:
+                            [xg, yg, wg, hg] = gbb
+                            cv2.rectangle(image, (xg, yg), (xg + wg, yg + hg), (255, 0, 255), 2)
+                    print('Garbage detected')
                     # Numberplate detection
                     numberplates = detect_numberplate(image)
                     if len(numberplates) > 0:
