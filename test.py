@@ -19,12 +19,11 @@ try:
             min_area = 200
             if area > min_area:
                 cv2.rectangle(image, (x, y), (x + w, y + h), (255, 0, 255), 2)
-                vehicle = image[x:x + w, y:y + h]
                 # Numberplate detection
-                numberplates = detect_numberplate(vehicle)
+                numberplates = detect_numberplate(image)
                 if len(numberplates) > 0:
                     [xn, yn, wn, hn] = numberplates[0]
-                    numberplate_roi = vehicle[yn:yn + hn, xn:xn + wn]
+                    numberplate_roi = image[yn:yn + hn, xn:xn + wn]
                     reg_number = get_vehicle_number(numberplate_roi)
                     if reg_number:
                         cv2.putText(image, 'Vehicle Reg No: ' + reg_number, (x, y - 5),
