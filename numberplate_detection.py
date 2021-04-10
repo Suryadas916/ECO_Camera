@@ -3,9 +3,9 @@ import pytesseract
 
 pytesseract.pytesseract.tesseract_cmd = "C:\\Program Files\\Tesseract-OCR\\tesseract.exe"
 
-camera = cv2.VideoCapture(0)
+camera = cv2.VideoCapture(1)
 nPlateCascade = cv2.CascadeClassifier("cascade classifiers/haarcascade_russian_plate_number.xml")
-src = './num_plate.jpeg'
+input_image = './num_plate.jpeg'
 
 
 def capture_image(src=None):
