@@ -1,7 +1,23 @@
 import cv2
 import concurrent.futures as concurrent
 from vehicle_detection import detect_vehicle
-from numberplate_detection import detect_numberplate, get_vehicle_number, capture_image
+from numberplate_detection import detect_numberplate, get_vehicle_number
+
+# Give video filename to perform detection on video
+video = cv2.VideoCapture(0)
+
+
+def capture_image(src=None):
+    """
+    Capture input image
+    :param src:
+    :return:
+    """
+    if src:
+        img = cv2.imread(src)
+    else:
+        _, img = video.read()
+    return img
 
 
 def detect(image):
